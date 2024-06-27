@@ -59,7 +59,7 @@ const login = catchError(async (req, res)=>{
         { expiresIn: '3d' }
     )
 
-    res.status(201).json({
+    res.json({
         user, token
     })
 })
