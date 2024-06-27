@@ -82,7 +82,7 @@ test('POST => BASE_URL/login should return statusCode 401', async() => {
     expect(res.statusCode).toBe(401)
 })
 
-test('should return status code 200, res.body.user and res.body.token to be defined and res.body.user.email === user.email', async() => {
+test('POST => should return status code 200, res.body.user and res.body.token to be defined and res.body.user.email === user.email', async() => {
     const user = {
         email: 'ton@gmail.com',
         password: '123456'
