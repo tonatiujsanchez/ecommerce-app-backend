@@ -95,6 +95,7 @@ test('POST => should return status code 200, res.body.user and res.body.token to
     expect(res.statusCode).toBe(200)
     expect(res.body).toBeDefined()
     expect(res.body.token).toBeDefined()
+    expect(res.body.user).toBeDefined()
     expect(res.body.user.email).toBe(user.email)
 })
 
