@@ -9,14 +9,11 @@ routerUser.route('/')
     .get(verifyJwt, getAll)
     .post(create)
 
-    
 routerUser.route('/login')
     .post(login)
 
-
 routerUser.route('/me')
     .get(verifyJwt, logged)
-
 
 routerUser.route('/:id')
     .delete(verifyJwt, remove)

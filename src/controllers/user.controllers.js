@@ -13,12 +13,14 @@ const create = catchError(async(req, res) => {
     return res.status(201).json(result);
 });
 
+
 const remove = catchError(async(req, res) => {
     const { id } = req.params;
     const result = await User.destroy({ where: {id} });
     if(!result) return res.sendStatus(404);
     return res.sendStatus(204);
 });
+
 
 const update = catchError(async(req, res) => {
     const { id } = req.params;
@@ -66,7 +68,9 @@ const login = catchError(async (req, res)=>{
 
 
 const logged = catchError(async (req, res) => {
-    const { user } = req    
+    const { id } = req.user
+    const user = await User.findByPk(id) 
+    
     return res.json(user)
 })
 
