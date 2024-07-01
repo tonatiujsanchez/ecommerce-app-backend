@@ -1,14 +1,11 @@
 const catchError = require('../utils/catchError');
 const Cart = require('../models/Cart');
-const User = require('../models/User');
 const Product = require('../models/Product');
 const Category = require('../models/Category');
 
 const getAll = catchError(async (req, res) => {
 
-    const userId = res.user.id
-    // 1. filtrar por userId
-
+    const userId = req.user.id
 
     const results = await Cart.findAll({
         where: { userId },
@@ -16,10 +13,12 @@ const getAll = catchError(async (req, res) => {
             {
                 model: Product,
                 attributes: { exclude: ['createdAt', 'updatedAt'] },
-                include: {
-                    model: Category,
-                    attributes: ['name']
-                }
+                include: [
+                    {
+                        model: Category,
+                        attributes: ['name']
+                    }
+                ]
             }
         ]
     });
@@ -28,33 +27,42 @@ const getAll = catchError(async (req, res) => {
 
 const create = catchError(async (req, res) => {
 
-    const { productId, quantity } = req.body
+    const { quantity, productId } = req.body
     const userId = req.user.id
 
-    const product = await Product.findByPk({ id: productId })
+
+    const product = await Product.findByPk(productId)
 
     if (!product) {
         return res.status(404).json({ message: 'Product not found' })
     }
 
-    const result = await Cart.create({
-        quantity, productId, userId
-    });
+    const body = {
+        userId, quantity, productId
+    }
+
+    const result = await Cart.create(body);
+
     return res.status(201).json(result);
 });
 
 const getOne = catchError(async (req, res) => {
+    
     const { id } = req.params;
+    const userId = req.user.id
+
     const result = await Cart.findByPk(id, {
         where: { userId },
         include: [
             {
                 model: Product,
                 attributes: { exclude: ['createdAt', 'updatedAt'] },
-                include: {
-                    model: Category,
-                    attributes: ['name']
-                }
+                include: [
+                    {
+                        model: Category,
+                        attributes: ['name']
+                    }
+                ]
             }
         ]
     });

@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../utils/connection');
 
 const Cart = sequelize.define('cart', {
-    quatity: {
+    quantity: {
         type: DataTypes.INTEGER,
         allowNull: false
     }
