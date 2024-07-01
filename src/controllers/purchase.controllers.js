@@ -1,17 +1,19 @@
 const catchError = require('../utils/catchError')
 const Purchase = require('../models/Purchase')
 const Product = require('../models/Product')
+const Cart = require('../models/Cart')
+const Category = require('../models/Category')
 
 const getAll = catchError(async(req, res) => {
     
-    const userId = res.user.id
+    const userId = req.user.id
 
     const results = await Purchase.findAll({
         where: { userId },
         include: [
             {
                 model: Product,
-                attributes: ['title, price'],
+                attributes: ['price'],
                 include: [
                     {
                       model: Category,
@@ -19,15 +21,17 @@ const getAll = catchError(async(req, res) => {
                     }
                   ]
             }
-
         ]
     })
+
     return res.json(results)
 })
 
+
+
 const create = catchError(async(req, res) => {
 
-    const userId = res.user.id
+    const userId = req.user.id
 
     const cart = await Cart.findAll({
         where:{ userId },
@@ -39,7 +43,7 @@ const create = catchError(async(req, res) => {
         return res.sendStatus(404)
     }
 
-    const result = await Purchase.create(cart)
+    const result = await Purchase.bulkCreate(cart)
 
     if(!result){
         return res.sendStatus(404)

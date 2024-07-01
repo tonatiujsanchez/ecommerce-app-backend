@@ -4,13 +4,9 @@ const app = require('../app')
 const Product = require('../models/Product')
 
 
-
 const BASE_URL = '/api/v1/cart'
 const BASE_URL_AUTH = '/api/v1/users/login'
 let token, product, cart, cartId, user
-
-
-
 
 
 beforeAll(async()=>{
@@ -55,6 +51,8 @@ test('POST => BASE_URL should return status 201 and res.body.quantity === cart.q
     expect(res.body).toBeDefined()
     expect(res.body.quantity).toBe(cart.quantity)
     expect(res.body.productId).toBe(cart.productId)
+    expect(res.body.userId).toBe(user.id)
+
 })
 
 
