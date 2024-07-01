@@ -11,7 +11,7 @@ const user = {
 }
 
 const BASE_URL = '/api/v1/users'
-let token, userId
+let token, userLogged, userId
 
 beforeAll(async()=>{
     const body = {
@@ -23,7 +23,7 @@ beforeAll(async()=>{
         .send(body)
 
     token = res.body.token
-
+    userLogged = res.body.user
 })
 
 
@@ -68,7 +68,7 @@ test('PUT => BASE_URL/:id should return status code 200 and res.body.firstName =
     expect(res.body.firstName).toBe(userUpdate.firstName)
 })
 
-
+// Test of Error Login
 test('POST => BASE_URL/login should return statusCode 401', async() => {
     const user = {
         email: 'ton@gmail.com',
@@ -82,7 +82,8 @@ test('POST => BASE_URL/login should return statusCode 401', async() => {
     expect(res.statusCode).toBe(401)
 })
 
-test('POST => should return status code 200, res.body.user and res.body.token to be defined and res.body.user.email === user.email', async() => {
+// Test Login
+test('POST => BASE_URL/login should return status code 200, res.body.user and res.body.token to be defined and res.body.user.email === user.email', async() => {
     const user = {
         email: 'ton@gmail.com',
         password: '123456'
@@ -97,6 +98,18 @@ test('POST => should return status code 200, res.body.user and res.body.token to
     expect(res.body.token).toBeDefined()
     expect(res.body.user).toBeDefined()
     expect(res.body.user.email).toBe(user.email)
+})
+
+// Test Logged
+test('POST => BASE_URL/me should return statusCode 200, re.body.id === userLogged.id and re.body.name === userLogged.name', async() => {
+    const res = await request(app)
+        .get(`${BASE_URL}/me`)
+        .set('Authorization', `Bearer ${token}`)
+        
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toBeDefined()
+    expect(res.body.id).toBe(userLogged.id)
+    expect(res.body.name).toBe(userLogged.name)
 })
 
 
