@@ -1,12 +1,15 @@
 require('../models')
 const request = require('supertest')
 const app = require('../app')
+const path = require('path')
+
 const Category = require('../models/Category')
 
 
 const BASE_URL = '/api/v1/products'
 const BASE_URL_AUTH = '/api/v1/users/login'
-let token, category, product, productId
+const BASE_URL_IMAGES = '/api/v1/product_images'
+let token, category, product, productId, image
 
 
 beforeAll(async()=>{
@@ -31,11 +34,24 @@ beforeAll(async()=>{
         price: 200,
         categoryId: category.id
     }
+
+    // Create image
+    const localImage = path.join(__dirname, 'createData', 'test-img.png')
+    image = await request(app)
+        .post(BASE_URL_IMAGES)
+        .set('Authorization', `Bearer ${token}`)
+        .attach('image', localImage)
+        
 })
 
 
 afterAll(async()=>{
     await category.destroy()
+
+    // Delete image
+    await request(app)
+        .delete(`${BASE_URL_IMAGES}/${ image.body.id }`)
+        .set('Authorization', `Bearer ${token}`)
 })
 
 
@@ -95,6 +111,22 @@ test('PUT => BASE_URL/:id should return statusCode 200 and res.body.title === pr
     expect(res.statusCode).toBe(200)
     expect(res.body).toBeDefined()
     expect(res.body.title).toBe( productUpdate.title )
+})
+
+// setImages
+test('POST => BASE_URL/:id/images should return statusCode 200 and res.body', async() => {
+
+    const res = await request(app)
+        .post(`${BASE_URL}/${ productId }/images`)
+        .send([ image.body.id ])
+        .set('Authorization', `Bearer ${token}`)
+
+    expect(res.statusCode).toBe(200)
+    expect(res.body).toBeDefined()
+    expect(res.body).toHaveLength(1)
+
+    expect( res.body[0].url ).toBe( image.body.url )
+    expect( res.body[0].filename ).toBe( image.body.filename )
 })
 
 test('DELETE => BASE_URL/:id should return statusCode 204', async() => {
