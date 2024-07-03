@@ -18,6 +18,9 @@ const getAll = catchError(async(req, res) => {
                     {
                       model: Category,
                       attributes: ['name']
+                    },
+                    {
+                        model: ProductImg
                     }
                   ]
             }
@@ -39,7 +42,7 @@ const create = catchError(async(req, res) => {
         attributes: ['quantity', 'userId', 'productId']
     })
 
-    if( !cart ){
+    if( cart.length === 0 ){
         return res.sendStatus(404)
     }
 

@@ -38,7 +38,6 @@ beforeAll(async()=>{
 
 afterAll(async()=>{
     await product.destroy()
-    await cart.destroy()
 })
 
 test('POST => BASE_URL should return status 201 and res.body.quantity === purchase.quantity', async() => {
