@@ -70,7 +70,9 @@ const login = catchError(async (req, res)=>{
 const logged = catchError(async (req, res) => {
     const { id } = req.user
     const user = await User.findByPk(id) 
-    
+    if(!user){
+        return res.status(404).json({ message: 'User not found' })
+    }
     return res.json(user)
 })
 

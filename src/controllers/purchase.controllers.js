@@ -3,6 +3,7 @@ const Purchase = require('../models/Purchase')
 const Product = require('../models/Product')
 const Cart = require('../models/Cart')
 const Category = require('../models/Category')
+const ProductImg = require('../models/ProductImg')
 
 const getAll = catchError(async(req, res) => {
     
@@ -42,8 +43,12 @@ const create = catchError(async(req, res) => {
         attributes: ['quantity', 'userId', 'productId']
     })
 
-    if( cart.length === 0 ){
+    if( !cart ){
         return res.sendStatus(404)
+    }
+
+    if( cart.length === 0 ){
+        return res.status(404).json({message: 'There is nothing you buy'})
     }
 
     const result = await Purchase.bulkCreate(cart)
